@@ -2,7 +2,7 @@ package flight;
 import java.util.ArrayList;
 
 /**
- * this represents a search result
+ * this represents a collection of flights
  * */
 public class FlightsCollect extends ArrayList<Flights>{
 

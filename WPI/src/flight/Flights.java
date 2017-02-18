@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 
 /**
- * this represents both one-way and round trip
+ * this represents multiple flights
  * */
 public class Flights extends ArrayList<Flight> {
 

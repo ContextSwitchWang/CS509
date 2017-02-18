@@ -1,10 +1,11 @@
 package database;
-import flight.FlightsCollect;
-import flight.Flight;
+import flight.SeatsCollect;
+import flight.Seats;
 import airport.Airport;
 import timeWindow.TimeWindow;
 import java.lang.UnsupportedOperationException;
 import java.time.Duration;
+import flight.SeatType;
 
 public class Search {
 	private static final UnsupportedOperationException e = null;
@@ -23,11 +24,11 @@ public class Search {
 	 * @return a collection of valid flights
 	 * @throws Exception
 	 */
-	FlightsCollect search(Airport s, Airport d, TimeWindow st, TimeWindow dt, int legs, Duration overlay) throws Exception{
+	SeatsCollect search(Airport s, Airport d, TimeWindow st, TimeWindow dt, int legs, Duration overlay, SeatType seatType) throws Exception{
 		throw e;
 	}
 	
-	void reserve(Flight flight) throws Exception{
+	void reserve(Seats seats) throws Exception{
 		throw e;
 	}
 }
