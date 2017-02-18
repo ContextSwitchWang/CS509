@@ -1,9 +1,12 @@
 package ui;
 
-import java.lang.UnsupportedOperationException;
+import flight.Flights;
+import flight.FlightsCollect;
+
+
 
 public class UI {
 	private Stage stage;
-	FlightsCollect searchResult;
-	
+	private FlightsCollect searchResult;
+	private Flights Chosen;
 }
