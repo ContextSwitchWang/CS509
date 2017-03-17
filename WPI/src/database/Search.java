@@ -10,8 +10,10 @@ import flight.SeatType;
 public class Search {
 	private static final UnsupportedOperationException e = null;
 	private DAI dao;
-	Search(DAI dao){
+	private TimeConversionAPI tca;
+	Search(DAI dao, TimeConversionAPI tca){
 		this.dao = dao;
+		this.tca = tca;
 	}
 	/**
 	 * *
