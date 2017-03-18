@@ -2,10 +2,12 @@ package database;
 import flight.SeatsCollect;
 import flight.Seats;
 import airport.Airport;
+import airport.Airports;
 import timeWindow.TimeWindow;
 import java.lang.UnsupportedOperationException;
 import java.time.Duration;
 import flight.SeatType;
+import conf.Saps;
 
 public class Search {
 	private static final UnsupportedOperationException e = null;
@@ -30,7 +32,20 @@ public class Search {
 		throw e;
 	}
 	
+	SeatsCollect search(Airport s, TimeWindow st){
+		String fs = dao.getFlightsDeparting(Saps.ticketAgency, s.code(), st.getStartDate());
+		//TODO: get xml
+		return null;
+	}
+	
+	Airports getAirports(){
+		String xml = dao.getAirports(Saps.ticketAgency);
+		return XMLParser.parseAirports(xml);
+	}
+	
 	void reserve(Seats seats) throws Exception{
 		throw e;
 	}
+	
+	
 }
