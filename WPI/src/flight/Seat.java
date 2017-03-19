@@ -1,6 +1,6 @@
 package flight;
 
 public class Seat {
-	private SeatType seatType;
-	private Flight fight;
+	public SeatType seatType;
+	public Flight fight;
 }
