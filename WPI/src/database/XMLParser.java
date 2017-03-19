@@ -122,19 +122,19 @@ public class XMLParser {
 		ans.SeatsCoach = Integer.parseInt(getCharacterDataFromElement(coach));
 		
 
-		Element Departure;
+		Element time;
 		Element Code;
 		Element Time;
 		
-		Departure = (Element)element.getElementsByTagName("Departure").item(0);
-		Code = (Element)Departure.getElementsByTagName("Code").item(0);
-		Time = (Element)Departure.getElementsByTagName("Time").item(0);
+		time = (Element)element.getElementsByTagName("Departure").item(0);
+		Code = (Element)time.getElementsByTagName("Code").item(0);
+		Time = (Element)time.getElementsByTagName("Time").item(0);
 		ans.CodeDepart = getCharacterDataFromElement(Code);
 		ans.TimeDepart = getCharacterDataFromElement(Time);
 		
-		Departure = (Element)element.getElementsByTagName("Arrival").item(0);
-		Code = (Element)Departure.getElementsByTagName("Code").item(0);
-		Time = (Element)Departure.getElementsByTagName("Time").item(0);
+		time = (Element)element.getElementsByTagName("Arrival").item(0);
+		Code = (Element)time.getElementsByTagName("Code").item(0);
+		Time = (Element)time.getElementsByTagName("Time").item(0);
 		ans.CodeArrival = getCharacterDataFromElement(Code);
 		ans.TimeArrival = getCharacterDataFromElement(Time);
 		return ans;

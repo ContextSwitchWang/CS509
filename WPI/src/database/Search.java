@@ -37,6 +37,9 @@ public class Search {
 	}
 	
 	SeatsCollect search(Airport s, TimeWindow st, SeatType seatType){
+		if(seatType == null){
+			return search(s, st);
+		}
 		SeatsCollect ans = new SeatsCollect();
 		String fs = dao.getFlightsDeparting(Saps.ticketAgency, s.Code, st.getStartDate());
 		Flights flights =XMLParser.parseFlights(fs);
@@ -54,9 +57,37 @@ public class Search {
 				ans.add(seats);
 			}
 		}
-		return null;
+		return ans;
 	}
 	
+	SeatsCollect search(Airport s, TimeWindow st){
+		SeatsCollect ans = new SeatsCollect();
+		String fs = dao.getFlightsDeparting(Saps.ticketAgency, s.Code, st.getStartDate());
+		Flights flights =XMLParser.parseFlights(fs);
+		SeatsCollect sc = new SeatsCollect();
+		Seat seat;
+		Seats seats;
+		for(Flight f : flights){
+			if(f.SeatsCoach > 0){
+				seat = new Seat();
+				seats = new Seats();
+				seat.fight = f;
+				seat.seatType = SeatType.Coach;
+				seats.add(seat);
+				ans.add(seats);
+			}
+			
+			if(f.SeatsFirstclass > 0){
+					seat = new Seat();
+					seats = new Seats();
+					seat.fight = f;
+					seat.seatType = SeatType.FirstClass;
+					seats.add(seat);
+					ans.add(seats);
+				}
+		}
+		return ans;
+	}
 	Airports getAirports(){
 		String xml = dao.getAirports(Saps.ticketAgency);
 		return XMLParser.parseAirports(xml);
