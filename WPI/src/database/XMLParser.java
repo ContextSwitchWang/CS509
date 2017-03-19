@@ -2,6 +2,7 @@ package database;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,8 +18,38 @@ import org.xml.sax.SAXException;
 
 import airport.Airport;
 import airport.Airports;
+import flight.Flights;
+import flight.Flight;
+
 
 public class XMLParser {
+	public static <T extends List<R>, R> void parse(String xml, T ans){
+		Document doc = buildDomDoc(xml);
+		NodeList nodes = doc.getFirstChild().getChildNodes();	
+		for (int i = 0; i < nodes.getLength(); i++) {
+			Element element = (Element) nodes.item(i);
+			ans.add((R)fromXML(element));
+		}
+	}
+	private static Object fromXML(Element element) {
+		String name = element.getTagName();
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public static Flights parseSeats(String xml) throws NullPointerException {
+		Flights ans = new Flights();
+		Document doc = buildDomDoc(xml);
+		NodeList nodes = doc.getElementsByTagName("Flight");	
+		for (int i = 0; i < nodes.getLength(); i++) {
+			Element element = (Element) nodes.item(i);
+			Flight e = buildFlight(element);	
+			if (e.isValid()) {
+				ans.add(e);
+			}
+		}
+		return ans;
+	}
+	
 	/**
 	 * Builds collection of airports from airports described in XML
 	 * 
@@ -30,8 +61,8 @@ public class XMLParser {
 	 * @return [possibly empty] collection of Airports in the xml string
 	 * @throws NullPointerException included to keep signature consistent with other addAll methods
 	 * 
-	 * @pre the xmlAirports string adheres to the format specified by the server API
-	 * @post the [possibly empty] set of Airports in the XML string are added to collection
+	 * the xmlAirports string adheres to the format specified by the server API
+	 * the [possibly empty] set of Airports in the XML string are added to collection
 	 */
 	public static Airports parseAirports (String xmlAirports) throws NullPointerException {
 		Airports airports = new Airports();
@@ -53,6 +84,8 @@ public class XMLParser {
 		return airports;
 	}
 	
+	
+	
 	/**
 	 * Creates an Airport object from a DOM node
 	 * 
@@ -60,41 +93,38 @@ public class XMLParser {
 	 * @param nodeAirport is a DOM Node describing an Airport
 	 * @return Airport object created from the DOM Node representation of the Airport
 	 * 
-	 * @pre nodeAirport is of format specified by CS509 server API
+	 * nodeAirport is of format specified by CS509 server API
 	 */
 	static private Airport buildAirport (Node nodeAirport) {
-		/**
-		 * Instantiate an empty Airport object
-		 */
 		Airport airport = new Airport();
-
-		String name;
-		String code;
-		double latitude;
-		double longitude;
-		
 		// The airport element has attributes of Name and 3 character airport code
 		Element elementAirport = (Element) nodeAirport;
-		name = elementAirport.getAttributeNode("Name").getValue();
-		code = elementAirport.getAttributeNode("Code").getValue();
+		airport.name = elementAirport.getAttribute("Name");
+		airport.Code = elementAirport.getAttribute("Code");
 		
 		// The latitude and longitude are child elements
 		Element elementLatLng;
 		elementLatLng = (Element)elementAirport.getElementsByTagName("Latitude").item(0);
-		latitude = Double.parseDouble(getCharacterDataFromElement(elementLatLng));
+		airport.Latitude = Double.parseDouble(getCharacterDataFromElement(elementLatLng));
 		
 		elementLatLng = (Element)elementAirport.getElementsByTagName("Longitude").item(0);
-		longitude = Double.parseDouble(getCharacterDataFromElement(elementLatLng));
-
-		/**
-		 * Update the Airport object with values from XML node
-		 */
-		airport.name(name);
-		airport.code(code);
-		airport.latitude(latitude);
-		airport.longitude(longitude);
-		
+		airport.Longitude = Double.parseDouble(getCharacterDataFromElement(elementLatLng));
 		return airport;
+	}
+	
+	private static Flight buildFlight(Element element) {
+		Flight ans = new Flight();
+		ans.Airplane = element.getAttribute("Airplane");
+		ans.FlightTime = element.getAttribute("FlightTime");
+		ans.Number = element.getAttribute("Number");
+		Element seating = (Element)element.getElementsByTagName("Seating").item(0);
+		Element first = (Element)seating.getElementsByTagName("FirstClass").item(0);
+		ans.PriceFirstclass = first.getAttribute("Price");
+		ans.SeatsFirstclass = Integer.parseInt(getCharacterDataFromElement(first));
+		Element coach = (Element)seating.getElementsByTagName("Coach").item(0);
+		ans.PriceCoach = coach.getAttribute("Price");
+		ans.SeatsCoach = Integer.parseInt(getCharacterDataFromElement(coach));
+		return null;
 	}
 
 	/**

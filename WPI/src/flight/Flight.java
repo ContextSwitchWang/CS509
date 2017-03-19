@@ -1,15 +1,19 @@
 package flight;
 
 public class Flight {
-	private String Airplane;
-	private String FlightTime;
-	private String Number;
-	private String CodeDepart;
-	private String TimeDepart;
-	private String CodeArrival;
-	private String TimeArrival;
-	private String PriceFirstclass;
-	private int SeatsFirstclass;
-	private String PriceCoach;
-	private int SeatsCoach;
+	public String Airplane;
+	public String FlightTime;
+	public String Number;
+	public String CodeDepart;
+	public String TimeDepart;
+	public String CodeArrival;
+	public String TimeArrival;
+	public String PriceFirstclass;
+	public int SeatsFirstclass;
+	public String PriceCoach;
+	public int SeatsCoach;
+	public boolean isValid() {
+		//TODO
+		return true;
+	}
 }
