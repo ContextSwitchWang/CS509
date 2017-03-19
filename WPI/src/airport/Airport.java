@@ -15,4 +15,9 @@ public class Airport {
 	public String toString(){
 		return String.format("%-50s%s\n", name, Code);
 	}
+	
+
+	public static String Header(){
+		return String.format("%-50s%s\n", "Name", "Code");
+	}
 }

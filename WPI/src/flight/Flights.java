@@ -13,6 +13,7 @@ public class Flights extends ArrayList<Flight> {
 	private static final long serialVersionUID = 1L;
 	public String toString(){
 		StringBuilder ans = new StringBuilder();
+		ans.append(Flight.Header());
 		for(Flight e: this){
 			ans.append(e.toString());
 		}

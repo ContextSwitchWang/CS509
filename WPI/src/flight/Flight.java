@@ -25,4 +25,8 @@ public class Flight {
 		//TODO print all fields nicely
 		return String.format("%-10s%-10s%-30s%-30s\n", Airplane, Number, TimeDepart, TimeArrival);
 	}
+	
+	public static String Header(){
+		return String.format("%-10s%-10s%-30s%-30s\n", "Airplane", "Number", "TimeDepart", "TimeArrival");
+	}
 }
