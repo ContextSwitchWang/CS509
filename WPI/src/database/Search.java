@@ -33,7 +33,7 @@ public class Search {
 	}
 	
 	SeatsCollect search(Airport s, TimeWindow st){
-		String fs = dao.getFlightsDeparting(Saps.ticketAgency, s.code(), st.getStartDate());
+		String fs = dao.getFlightsDeparting(Saps.ticketAgency, s.Code, st.getStartDate());
 		//TODO: get xml
 		return null;
 	}

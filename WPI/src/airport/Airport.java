@@ -12,5 +12,7 @@ public class Airport {
 		return false;
 	}
 	
-	
+	public String toString(){
+		return String.format("%-50s%s\n", name, Code);
+	}
 }

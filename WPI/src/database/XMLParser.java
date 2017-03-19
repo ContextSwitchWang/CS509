@@ -23,20 +23,12 @@ import flight.Flight;
 
 
 public class XMLParser {
-	public static <T extends List<R>, R> void parse(String xml, T ans){
-		Document doc = buildDomDoc(xml);
-		NodeList nodes = doc.getFirstChild().getChildNodes();	
-		for (int i = 0; i < nodes.getLength(); i++) {
-			Element element = (Element) nodes.item(i);
-			ans.add((R)fromXML(element));
-		}
-	}
-	private static Object fromXML(Element element) {
-		String name = element.getTagName();
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public static Flights parseSeats(String xml) throws NullPointerException {
+	/**
+	 * @param xml string to generate flights from
+	 * @return the flights generated from XML
+	 * @throws NullPointerException to be consistent
+	 */
+	public static Flights parseFlights(String xml) throws NullPointerException {
 		Flights ans = new Flights();
 		Document doc = buildDomDoc(xml);
 		NodeList nodes = doc.getElementsByTagName("Flight");	
@@ -62,7 +54,6 @@ public class XMLParser {
 	 * @throws NullPointerException included to keep signature consistent with other addAll methods
 	 * 
 	 * the xmlAirports string adheres to the format specified by the server API
-	 * the [possibly empty] set of Airports in the XML string are added to collection
 	 */
 	public static Airports parseAirports (String xmlAirports) throws NullPointerException {
 		Airports airports = new Airports();
@@ -95,10 +86,10 @@ public class XMLParser {
 	 * 
 	 * nodeAirport is of format specified by CS509 server API
 	 */
-	static private Airport buildAirport (Node nodeAirport) {
+	static private Airport buildAirport (Element nodeAirport) {
 		Airport airport = new Airport();
 		// The airport element has attributes of Name and 3 character airport code
-		Element elementAirport = (Element) nodeAirport;
+		Element elementAirport = nodeAirport;
 		airport.name = elementAirport.getAttribute("Name");
 		airport.Code = elementAirport.getAttribute("Code");
 		
@@ -112,11 +103,16 @@ public class XMLParser {
 		return airport;
 	}
 	
+	/**
+	 * @param element to build flight from
+	 * @return a Flight constructed from element
+	 */
 	private static Flight buildFlight(Element element) {
 		Flight ans = new Flight();
 		ans.Airplane = element.getAttribute("Airplane");
 		ans.FlightTime = element.getAttribute("FlightTime");
 		ans.Number = element.getAttribute("Number");
+		
 		Element seating = (Element)element.getElementsByTagName("Seating").item(0);
 		Element first = (Element)seating.getElementsByTagName("FirstClass").item(0);
 		ans.PriceFirstclass = first.getAttribute("Price");
@@ -124,7 +120,24 @@ public class XMLParser {
 		Element coach = (Element)seating.getElementsByTagName("Coach").item(0);
 		ans.PriceCoach = coach.getAttribute("Price");
 		ans.SeatsCoach = Integer.parseInt(getCharacterDataFromElement(coach));
-		return null;
+		
+
+		Element Departure;
+		Element Code;
+		Element Time;
+		
+		Departure = (Element)element.getElementsByTagName("Departure").item(0);
+		Code = (Element)Departure.getElementsByTagName("Code").item(0);
+		Time = (Element)Departure.getElementsByTagName("Time").item(0);
+		ans.CodeDepart = getCharacterDataFromElement(Code);
+		ans.TimeDepart = getCharacterDataFromElement(Time);
+		
+		Departure = (Element)element.getElementsByTagName("Arrival").item(0);
+		Code = (Element)Departure.getElementsByTagName("Code").item(0);
+		Time = (Element)Departure.getElementsByTagName("Time").item(0);
+		ans.CodeArrival = getCharacterDataFromElement(Code);
+		ans.TimeArrival = getCharacterDataFromElement(Time);
+		return ans;
 	}
 
 	/**

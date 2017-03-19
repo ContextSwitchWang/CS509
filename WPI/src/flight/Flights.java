@@ -11,5 +11,11 @@ public class Flights extends ArrayList<Flight> {
 	 * this is a mandatory field, don't worry about it
 	 */
 	private static final long serialVersionUID = 1L;
-
+	public String toString(){
+		StringBuilder ans = new StringBuilder();
+		for(Flight e: this){
+			ans.append(e.toString());
+		}
+		return ans.toString();
+	}
 }
