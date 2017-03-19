@@ -1,19 +1,29 @@
 package ui;
 
-import flight.Flights;
-import flight.FlightsCollect;
+import flight.Seats;
+import flight.SeatsCollect;
 import flight.SeatType;
+import database.Search;
 
 public class UI {
-	public enum Stage {
-		DISABLE,
+	public enum State {
+		TOPLEVEL,
 		SEARCH,
 		SELECT,
 		CONFIRM
 	}
-
-	private Stage stage;
+	
+	public UI(){
+		state = State.TOPLEVEL;
+		DisplayMenu();
+	}
+	
+	public void DisplayMenu(){
+		
+	}
+	
+	private State state;
 	private SeatType seat;
-	private FlightsCollect searchResult;
-	private Flights Chosen;
+	private SeatsCollect searchResult;
+	private Seats Chosen;
 }
