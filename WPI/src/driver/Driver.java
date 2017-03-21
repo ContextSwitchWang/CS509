@@ -1,9 +1,13 @@
 package driver;
 
+import ui.UI;
+
 public class Driver {
-	void main(String args[]){
+	public static void main(String[] args){
 		/**
 		 * entry point
 		 * */
+		UI ui = new UI();
+		ui.start();
 	}
 }

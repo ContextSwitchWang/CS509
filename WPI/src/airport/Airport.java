@@ -1,8 +1,23 @@
 package airport;
 
 public class Airport {
-	private int Latitude;
-	private int Longitude;
-	private int Code;
-	private String name;
+	public double Latitude;
+	public double Longitude;
+	public String Code;
+	public String name;
+	
+	public boolean isValid() {
+		if(name != null && Code != null)
+			return true;
+		return false;
+	}
+	
+	public String toString(){
+		return String.format("%-50s%s\n", name, Code);
+	}
+	
+
+	public static String Header(){
+		return String.format("%-50s%s\n", "Name", "Code");
+	}
 }

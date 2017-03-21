@@ -2,10 +2,16 @@ package database;
 import flight.SeatsCollect;
 import flight.Seats;
 import airport.Airport;
+import airport.Airports;
 import timeWindow.TimeWindow;
 import java.lang.UnsupportedOperationException;
 import java.time.Duration;
+
+import flight.Flight;
+import flight.Flights;
+import flight.Seat;
 import flight.SeatType;
+import conf.Saps;
 
 public class Search {
 	private static final UnsupportedOperationException e = null;
@@ -30,7 +36,66 @@ public class Search {
 		throw e;
 	}
 	
+	SeatsCollect search(Airport s, TimeWindow st, SeatType seatType){
+		if(seatType == null){
+			return search(s, st);
+		}
+		SeatsCollect ans = new SeatsCollect();
+		String fs = dao.getFlightsDeparting(Saps.ticketAgency, s.Code, st.getStartDate());
+		Flights flights =XMLParser.parseFlights(fs);
+		SeatsCollect sc = new SeatsCollect();
+		Seat seat;
+		Seats seats;
+		for(Flight f : flights){
+			if(seatType == SeatType.Coach && f.SeatsCoach > 0
+				|| seatType == SeatType.FirstClass && f.SeatsFirstclass > 0){
+				seat = new Seat();
+				seats = new Seats();
+				seat.fight = f;
+				seat.seatType = seatType;
+				seats.add(seat);
+				ans.add(seats);
+			}
+		}
+		return ans;
+	}
+	
+	SeatsCollect search(Airport s, TimeWindow st){
+		SeatsCollect ans = new SeatsCollect();
+		String fs = dao.getFlightsDeparting(Saps.ticketAgency, s.Code, st.getStartDate());
+		Flights flights =XMLParser.parseFlights(fs);
+		SeatsCollect sc = new SeatsCollect();
+		Seat seat;
+		Seats seats;
+		for(Flight f : flights){
+			if(f.SeatsCoach > 0){
+				seat = new Seat();
+				seats = new Seats();
+				seat.fight = f;
+				seat.seatType = SeatType.Coach;
+				seats.add(seat);
+				ans.add(seats);
+			}
+			
+			if(f.SeatsFirstclass > 0){
+					seat = new Seat();
+					seats = new Seats();
+					seat.fight = f;
+					seat.seatType = SeatType.FirstClass;
+					seats.add(seat);
+					ans.add(seats);
+				}
+		}
+		return ans;
+	}
+	Airports getAirports(){
+		String xml = dao.getAirports(Saps.ticketAgency);
+		return XMLParser.parseAirports(xml);
+	}
+	
 	void reserve(Seats seats) throws Exception{
 		throw e;
 	}
+	
+	
 }
