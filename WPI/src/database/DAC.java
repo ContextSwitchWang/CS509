@@ -27,7 +27,7 @@ public class DAC implements DAI {
 		return result;
 	}
 	
-	public String getFlightsDeparting(String airportCode, String day)
+	public String getFlightsDeparting(String ticketAgency, String airportCode, String day)
 	{
 		String queryString = "?team=TeamA&action=list&list_type=departing&airport=" + airportCode +"&day=" + day;
 		String url = mUrlBase + queryString;
