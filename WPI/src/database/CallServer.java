@@ -31,7 +31,7 @@ public class CallServer {
 			if (responseCode >= HttpURLConnection.HTTP_OK) {
 				InputStream inputStream = connection.getInputStream();
 				String encoding = connection.getContentEncoding();
-				encoding = (encoding == null ? "UTF-8" : encoding);
+				encoding = (encoding == null ? "ISO-8859-1" : encoding);
 
 				reader = new BufferedReader(new InputStreamReader(inputStream, encoding));
 				while ((line = reader.readLine()) != null) {
