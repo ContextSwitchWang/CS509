@@ -6,6 +6,7 @@ import airport.Airports;
 import timeWindow.TimeWindow;
 import java.lang.UnsupportedOperationException;
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 import flight.Flight;
 import flight.Flights;
@@ -17,7 +18,8 @@ public class Search {
 	private static final UnsupportedOperationException e = null;
 	private DAI dao;
 	private TimeConversionAPI tca;
-	Search(DAI dao, TimeConversionAPI tca){
+	private Airports airports;
+	public Search(DAI dao, TimeConversionAPI tca){
 		this.dao = dao;
 		this.tca = tca;
 	}
@@ -36,12 +38,78 @@ public class Search {
 		throw e;
 	}
 	
-	SeatsCollect search(Airport s, TimeWindow st, SeatType seatType){
-		if(seatType == null){
-			return search(s, st);
+	public Airport getAirport(String code){
+		if(airports == null){
+			String xml = dao.getAirports(Saps.ticketAgency);
+			airports = XMLParser.parseAirports(xml);
 		}
+		for(Airport a : airports){
+			if(a.Code.equals(code)){
+				return a;
+			}
+		}
+		return null;
+	}
+	
+	private long getTimeZoneOffset(Airport s){
+		if(s.timeZoneOffset == null){
+			long offset = (long)XMLParser.parseRawOffset(tca.getTimeOffset(Double.toString(s.Latitude),
+					Double.toString(s.Longitude)));
+			s.timeZoneOffset = offset;
+		}
+		return s.timeZoneOffset;
+	}
+	
+	public SeatsCollect searchDepartLocal(Airport s, TimeWindow st, SeatType seatType){
+		long offset = getTimeZoneOffset(s);
+		TimeWindow newst = new TimeWindow();
+		newst.start = st.start.minusSeconds(offset);
+		newst.end   = st.end.minusSeconds(offset);
+		SeatsCollect ssc = searchDepart(s, newst, seatType);
+		for(Seats ss: ssc){
+			for(Seat seat: ss){
+				offset = getTimeZoneOffset(getAirport(seat.flight.CodeDepart));
+				seat.flight.TimeDepart.plusSeconds(offset);
+				offset = getTimeZoneOffset(getAirport(seat.flight.CodeArrival));
+				seat.flight.TimeArrival.plusSeconds(offset);
+				
+			}
+		}
+		return ssc;
+	}
+	
+	public SeatsCollect searchDepart(Airport s, TimeWindow st, SeatType seatType){
 		SeatsCollect ans = new SeatsCollect();
-		String fs = dao.getFlightsDeparting(Saps.ticketAgency, s.Code, st.getStartDate());
+		LocalDateTime start = st.start;
+		LocalDateTime end   = st.end;
+		LocalDateTime time = start;
+		do{
+			SeatsCollect ssc = searchOnDay(s, TimeWindow.getDate(time), seatType);
+			for(Seats ss: ssc ){
+				if(ss.size() == 0){
+					throw new RuntimeException("Unexpected empty seats");
+				}
+				LocalDateTime depart = ss.get(0).flight.TimeDepart;
+				if(depart.isBefore(end) &&
+						depart.isAfter(start)){
+					ans.add(ss);
+				}
+			}
+			time = time.plusDays(1);
+		}while(time.getYear() <= st.end.getYear() 
+			&& time.getDayOfYear() <= st.end.getDayOfYear());;
+		return ans;
+	}
+	
+	public SeatsCollect searchOnDay(Airport s, String day, SeatType seatType){
+		SeatsCollect ans = new SeatsCollect();
+		if(seatType == null){
+			ans.addAll(searchOnDay(s, day, SeatType.Coach));
+			ans.addAll(searchOnDay(s, day, SeatType.FirstClass));
+			return ans;
+		}
+		
+		String fs = dao.getFlightsDeparting(Saps.ticketAgency, s.Code, day);
 		Flights flights =XMLParser.parseFlights(fs);
 		SeatsCollect sc = new SeatsCollect();
 		Seat seat;
@@ -51,7 +119,7 @@ public class Search {
 				|| seatType == SeatType.FirstClass && f.SeatsFirstclass > 0){
 				seat = new Seat();
 				seats = new Seats();
-				seat.fight = f;
+				seat.flight = f;
 				seat.seatType = seatType;
 				seats.add(seat);
 				ans.add(seats);
@@ -60,37 +128,13 @@ public class Search {
 		return ans;
 	}
 	
-	SeatsCollect search(Airport s, TimeWindow st){
-		SeatsCollect ans = new SeatsCollect();
-		String fs = dao.getFlightsDeparting(Saps.ticketAgency, s.Code, st.getStartDate());
-		Flights flights =XMLParser.parseFlights(fs);
-		SeatsCollect sc = new SeatsCollect();
-		Seat seat;
-		Seats seats;
-		for(Flight f : flights){
-			if(f.SeatsCoach > 0){
-				seat = new Seat();
-				seats = new Seats();
-				seat.fight = f;
-				seat.seatType = SeatType.Coach;
-				seats.add(seat);
-				ans.add(seats);
-			}
-			
-			if(f.SeatsFirstclass > 0){
-					seat = new Seat();
-					seats = new Seats();
-					seat.fight = f;
-					seat.seatType = SeatType.FirstClass;
-					seats.add(seat);
-					ans.add(seats);
-				}
+	
+	public Airports getAirports(){
+		if(airports == null){
+			String xml = dao.getAirports(Saps.ticketAgency);
+			airports = XMLParser.parseAirports(xml);
 		}
-		return ans;
-	}
-	Airports getAirports(){
-		String xml = dao.getAirports(Saps.ticketAgency);
-		return XMLParser.parseAirports(xml);
+		return airports;
 	}
 	
 	void reserve(Seats seats) throws Exception{

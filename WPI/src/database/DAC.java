@@ -8,7 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 // Database Access Class
-public class DAC implements DAI {
+public class DAC extends CallServer implements DAI {
 	private String mUrlBase = "http://cs509.cs.wpi.edu:8181/CS509.server/ReservationSystem";
 	public String getAirports(String ticketAgency)
 	{
@@ -51,52 +51,6 @@ public class DAC implements DAI {
 		return "blah";
 	}
 	
-	public String getTimeOffset(String latitude, String longitude)
-	{
-		String url = "https://maps.googleapis.com/maps/api/timezone/xml?location="+latitude+","+longitude+"&timestamp=1331161200&key=AIzaSyDWI6Y8TSzKLtiHyQnTwjxtCXcNTMX7NLM";
-		String result = callServer(url, "GET", "Mozilla/5.0");
-		return result;
-	}
 	
-	private String callServer(String urlString, String method, String userAgent)
-	{
-		
-		URL url;
-		HttpURLConnection connection;
-		BufferedReader reader;
-		String line;
-		StringBuffer result = new StringBuffer();
-		try
-		{
-			url = new URL(urlString);
-			connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestMethod(method);
-			connection.setRequestProperty("User-Agent", userAgent);
-
-			/**
-			 * If response code of SUCCESS read the XML string returned
-			 * line by line to build the full return string
-			 */
-			int responseCode = connection.getResponseCode();
-			if (responseCode >= HttpURLConnection.HTTP_OK) {
-				InputStream inputStream = connection.getInputStream();
-				String encoding = connection.getContentEncoding();
-				encoding = (encoding == null ? "UTF-8" : encoding);
-
-				reader = new BufferedReader(new InputStreamReader(inputStream));
-				while ((line = reader.readLine()) != null) {
-					result.append(line);
-				}
-				reader.close();
-			}
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return result.toString();
-	}
 	
 }

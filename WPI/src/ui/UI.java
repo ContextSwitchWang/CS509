@@ -8,8 +8,13 @@ import flight.SeatType;
 import java.util.Scanner;
 
 import airport.Airport;
+import airport.Airports;
+import database.DAC;
 import database.Search;
+import database.TimeConversion;
+
 import java.lang.UnsupportedOperationException;
+import java.time.LocalDateTime;
 
 public class UI {
 	private static final UnsupportedOperationException e = null;
@@ -44,15 +49,23 @@ public class UI {
 			System.out.print(">>>");
 			switch(stdin.nextLine()){
 				case "a":
-					InputDepartTime();
+					departTime.start = inputTime();
+					break;
+				case "d":
+					departTime.end = inputTime();
 					break;
 				case "b":
-					throw e;
+					selectAirport();
+					break;
 				case "c":
 					InputSeatType();
 					break;
 				case "s":
-					throw e;
+					Search();
+					break;
+				case "l":
+					listAirports();
+					break;
 				case "m":
 					DisplayMenu();
 					break;
@@ -64,53 +77,82 @@ public class UI {
 			}
 		}
 	}
+	private void Search(){
+		if(departTime.start == null || departTime.end == null || departAirport == null){
+			System.out.println("Please input depart time and airport at least");
+			return;
+		}
+		System.out.println(search.searchDepartLocal(departAirport, departTime, seatType));
+	}
 	
 	private void InputSeatType() {
 		while(true){
-			System.out.println("Please Input Seat Type, c for coach, f for first class:");
+			System.out.println("Please Input Seat Type, c for coach, f for first class or b for both:");
 			System.out.print(">>>");
 			String c = stdin.nextLine();
 			switch(c){
 				case "c": seatType = SeatType.Coach; break;
 				case "f": seatType = SeatType.FirstClass; break;
+				case "b": seatType = null;break;
 				default:
 					System.out.println("Your input cannot be recognized.");
-					continue;
+					return;
 			}
 			System.out.println("Your seat type is saved");
 			return;
 		}
 		
 	}
-
-	private void InputDepartTime() {
+	
+	void selectAirport(){
 		while(true){
-			System.out.println("Please input departure time in yyyy-MM-dd-HH:mm format:");
+			System.out.println("Please input Airport Code:");
 			System.out.print(">>>");
+			String code = stdin.nextLine();
+			Airport a = search.getAirport(code);
+			if(a != null){
+				departAirport = a;
+				System.out.println("Your Airport is saved.");
+				return;
+			}
+			System.out.println("Your Code is not recognized.");
+			return;
+		}
+	}
+	
+	private LocalDateTime inputTime() {
+		while(true){
+			System.out.println("Please input your time in yyyy-MM-dd-HH:mm format:");
+			System.out.print(">>>");
+			LocalDateTime t;
 			String time = stdin.nextLine();
 			try{
-				departTime.start = TimeWindow.parseDate(time);
+				t = TimeWindow.parseDateUI(time);
 			}
 			catch(java.time.format.DateTimeParseException e){
 				System.out.println("Your input cannot be parsed. The error is: "
 						+ "\n" + e.getMessage() + '.');
-				continue;
+				return null;
 			}
-			System.out.println("Your departure time is saved");
-			return;
+			System.out.println("Your time is saved");
+			return t;
 		}
 		
 	}
-
+	
 	public void DisplayMenu(){
 		System.out.println(String.format("%-40s%-40s%s", 
 				"Action",
 				"Current Value",
 				"Command"));
 		System.out.println(String.format("%-40s%-40s%s", 
-				"Departure Time",
-				departTime,
+				"Departure Earliest Time",
+				departTime.getStartDateUI(),
 				"(a)"));
+		System.out.println(String.format("%-40s%-40s%s", 
+				"Departure Latest Time",
+				departTime.getEndDateUI(),
+				"(d)"));
 		System.out.println(String.format("%-40s%-40s%s", 
 				"Departure Airport",
 				printDepartAirport(),
@@ -128,6 +170,10 @@ public class UI {
 				"",
 				"(m)"));
 		System.out.println(String.format("%-40s%-40s%s", 
+				"List Airports",
+				"",
+				"(l)"));
+		System.out.println(String.format("%-40s%-40s%s", 
 				"Quit",
 				"",
 				"(q)"));	
@@ -138,13 +184,19 @@ public class UI {
 			return "None";
 		}
 		else{
-			return departAirport.toString();
+			return departAirport.name;
 		}
+	}
+	
+	
+	
+	void listAirports(){
+		System.out.println(search.getAirports());
 	}
 	
 	String printSeat(){
 		if(seatType == null){
-			return "None";
+			return "Both";
 		}
 		else{
 			return seatType.toString();
@@ -152,6 +204,7 @@ public class UI {
 	}
 	
 	Scanner stdin;
+	Search search = new Search(new DAC(), new TimeConversion());
 	private TimeWindow departTime;
 	private Airport departAirport;
 	private State state;

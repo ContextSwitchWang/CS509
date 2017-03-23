@@ -14,8 +14,10 @@ public class Flights extends ArrayList<Flight> {
 	public String toString(){
 		StringBuilder ans = new StringBuilder();
 		ans.append(Flight.Header());
+		ans.append("\n");
 		for(Flight e: this){
 			ans.append(e.toString());
+			ans.append("\n");
 		}
 		return ans.toString();
 	}

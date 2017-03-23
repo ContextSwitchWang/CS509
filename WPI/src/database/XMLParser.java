@@ -19,10 +19,18 @@ import org.xml.sax.SAXException;
 import airport.Airport;
 import airport.Airports;
 import flight.Flights;
+import timeWindow.TimeWindow;
 import flight.Flight;
 
 
 public class XMLParser {
+	
+	public static double parseRawOffset(String xml){
+		Document doc = buildDomDoc(xml);
+		Node node = doc.getElementsByTagName("raw_offset").item(0);
+		return Double.parseDouble(getCharacterDataFromElement(((Element)node)));
+	}
+	
 	/**
 	 * @param xml string to generate flights from
 	 * @return the flights generated from XML
@@ -130,13 +138,13 @@ public class XMLParser {
 		Code = (Element)time.getElementsByTagName("Code").item(0);
 		Time = (Element)time.getElementsByTagName("Time").item(0);
 		ans.CodeDepart = getCharacterDataFromElement(Code);
-		ans.TimeDepart = getCharacterDataFromElement(Time);
+		ans.TimeDepart = TimeWindow.parseDateXML(getCharacterDataFromElement(Time));
 		
 		time = (Element)element.getElementsByTagName("Arrival").item(0);
 		Code = (Element)time.getElementsByTagName("Code").item(0);
 		Time = (Element)time.getElementsByTagName("Time").item(0);
 		ans.CodeArrival = getCharacterDataFromElement(Code);
-		ans.TimeArrival = getCharacterDataFromElement(Time);
+		ans.TimeArrival = TimeWindow.parseDateXML(getCharacterDataFromElement(Time));
 		return ans;
 	}
 

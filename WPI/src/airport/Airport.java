@@ -5,6 +5,7 @@ public class Airport {
 	public double Longitude;
 	public String Code;
 	public String name;
+	public Long   timeZoneOffset;
 	
 	public boolean isValid() {
 		if(name != null && Code != null)
@@ -13,11 +14,11 @@ public class Airport {
 	}
 	
 	public String toString(){
-		return String.format("%-50s%s\n", name, Code);
+		return String.format("%-50s%s", name, Code);
 	}
 	
 
 	public static String Header(){
-		return String.format("%-50s%s\n", "Name", "Code");
+		return String.format("%-50s%s", "Name", "Code");
 	}
 }

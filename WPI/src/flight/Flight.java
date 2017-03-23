@@ -1,5 +1,7 @@
 package flight;
 
+import java.time.LocalDateTime;
+
 import airport.Airport;
 
 public class Flight {
@@ -8,10 +10,10 @@ public class Flight {
 	public String Number;
 	public String CodeDepart;
 	//TODO: in string format, create field in time format
-	public String TimeDepart;
+	public LocalDateTime TimeDepart;
 	public String CodeArrival;
 	//TODO: in string format, create field in time format
-	public String TimeArrival;
+	public LocalDateTime TimeArrival;
 	public String PriceFirstclass;
 	public int SeatsFirstclass;
 	public String PriceCoach;
@@ -23,10 +25,10 @@ public class Flight {
 	}
 	public String toString(){
 		//TODO print all fields nicely
-		return String.format("%-10s%-10s%-30s%-20s%-30s\n", Airplane, Number, TimeDepart, FlightTime.toString() +  " min", TimeArrival);
+		return String.format("%-10s%-10s%-25s%-15s%-25s", Airplane, Number, TimeDepart, FlightTime.toString() +  " min", TimeArrival);
 	}
 	
 	public static String Header(){
-		return String.format("%-10s%-10s%-30s%-20s%-30s\n", "Airplane", "Number", "TimeDepart", "FlightTime", "TimeArrival");
+		return String.format("%-10s%-10s%-25s%-15s%-25s", "Airplane", "Number", "TimeDepart", "FlightTime", "TimeArrival");
 	}
 }
