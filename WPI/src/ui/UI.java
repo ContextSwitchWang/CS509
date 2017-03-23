@@ -51,13 +51,13 @@ public class UI {
 				case "a":
 					departTime.start = inputTime();
 					break;
-				case "d":
+				case "b":
 					departTime.end = inputTime();
 					break;
-				case "b":
+				case "c":
 					selectAirport();
 					break;
-				case "c":
+				case "d":
 					InputSeatType();
 					break;
 				case "s":
@@ -79,7 +79,7 @@ public class UI {
 	}
 	private void Search(){
 		if(departTime.start == null || departTime.end == null || departAirport == null){
-			System.out.println("Please input depart time and airport at least");
+			System.out.println("Please input the ealiest depart time and airport at least");
 			return;
 		}
 		System.out.println(search.searchDepartLocal(departAirport, departTime, seatType));
@@ -152,15 +152,15 @@ public class UI {
 		System.out.println(String.format("%-40s%-40s%s", 
 				"Departure Latest Time",
 				departTime.getEndDateUI(),
-				"(d)"));
+				"(b)"));
 		System.out.println(String.format("%-40s%-40s%s", 
 				"Departure Airport",
 				printDepartAirport(),
-				"(b)"));
+				"(c)"));
 		System.out.println(String.format("%-40s%-40s%s", 
 				"Seat Type",
 				printSeat(),
-				"(c)"));
+				"(d)"));
 		System.out.println(String.format("%-40s%-40s%s", 
 				"Search Flight",
 				"None",
