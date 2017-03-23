@@ -82,7 +82,13 @@ public class UI {
 			System.out.println("Please input the ealiest depart time and airport at least");
 			return;
 		}
-		System.out.println(search.searchDepartLocal(departAirport, departTime, seatType));
+		searchResult = search.searchDepartLocal(departAirport, departTime, seatType);
+		if(searchResult.isEmpty()){
+			System.out.println("Nothing matches your search");
+		}
+		else{
+			System.out.println(searchResult);
+		}
 	}
 	
 	private void InputSeatType() {

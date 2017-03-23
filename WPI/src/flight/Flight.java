@@ -25,10 +25,10 @@ public class Flight {
 	}
 	public String toString(){
 		//TODO print all fields nicely
-		return String.format("%-10s%-10s%-25s%-15s%-25s", Airplane, Number, TimeDepart, FlightTime.toString() +  " min", TimeArrival);
+		return String.format("%-10s%-10s%-21s%-8s%-15s%-23s%-10s", Airplane, Number, TimeDepart, CodeDepart, FlightTime.toString() +  " min", TimeArrival, CodeArrival);
 	}
 	
 	public static String Header(){
-		return String.format("%-10s%-10s%-25s%-15s%-25s", "Airplane", "Number", "TimeDepart", "FlightTime", "TimeArrival");
+		return String.format("%-10s%-10s%-21s%-8s%-15s%-23s%-10s", "Airplane", "Number", "TimeDepart", "Depart", "FlightTime", "TimeArrival", "Arrivial");
 	}
 }
