@@ -50,9 +50,15 @@ public class UI {
 			switch(stdin.nextLine()){
 				case "a":
 					departTime.start = inputTime();
+					if(departTime.end == null){
+						departTime.end = departTime.start.plusDays(1);
+					}
 					break;
 				case "b":
 					departTime.end = inputTime();
+					if(departTime.start == null){
+						departTime.start = departTime.end.minusDays(1);
+					}
 					break;
 				case "c":
 					selectAirport();
