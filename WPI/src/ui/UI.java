@@ -52,9 +52,15 @@ public class UI {
 			switch(stdin.nextLine()){
 				case "a":
 					departTime.start = inputTime();
+					if(departTime.end == null){
+						departTime.end = departTime.start.plusDays(1);
+					}
 					break;
 				case "b":
 					departTime.end = inputTime();
+					if(departTime.start == null){
+						departTime.start = departTime.end.minusDays(1);
+					}
 					break;
 				case "e":
 					arrivTime.start = inputTime();
@@ -76,6 +82,9 @@ public class UI {
 					break;
 				case "r":
 					Search(true);
+					break;
+				case "o":
+					confirm();
 					break;
 				case "l":
 					listAirports();
@@ -115,13 +124,21 @@ public class UI {
 		}
 		System.out.println(ans);
 		while(true){
-			System.out.println("Please Input p to sort on price, s to search again, c to cancel or an integer to make a selection");
+			System.out.println("Please Input p to sort on price, s to search again, c to cancel, e to deselect or an integer to make a selection");
 			System.out.print(">>>");
 			String input = stdin.nextLine();
 			switch(input){
 				case "p": ans.sortOnPrice(true); break;
 				case "s": System.out.println(ans); break;
 				case "c": return;
+				case "e":
+					if(searchReturn){
+						returnSelection = null;
+					}
+					else{
+						selection = null;
+					}
+					break;
 				default:
 					int sel = Integer.parseInt(input);
 					if(sel <= 0 || sel > ans.size()){
@@ -134,6 +151,7 @@ public class UI {
 					else{
 						selection = ans.get(sel-1);
 					}
+					System.out.println("Selection is saved");
 					return;
 			}
 		}
