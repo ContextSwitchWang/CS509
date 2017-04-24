@@ -17,6 +17,7 @@ import flight.SeatType;
 import conf.Saps;
 
 public class Search {
+	
 	private static final UnsupportedOperationException e = null;
 	private DAI dao;
 	private TimeConversionAPI tca;
@@ -342,14 +343,17 @@ public class Search {
 		return airports;
 	}
 	
-	public void reserve(Seats seats){
+	public String reserveURL(Seats seats){
 		StringBuilder sb = new StringBuilder();
 		sb.append("<Flights>");
 		for(Seat seat: seats){
-			sb.append(String.format("<Flight number=%s seating=%s/>", seat.flight.Number, seat.seatType));	
+			sb.append(String.format("<Flight number=\"%s\" seating=\"%s\"/>", seat.flight.Number, seat.seatType));	
 		}
 		sb.append("</Flights>");
-		dao.reserve(Saps.ticketAgency, sb.toString());
+		return sb.toString();
+	}
+	public void reserve(Seats seats){
+		dao.reserve(Saps.ticketAgency, reserveURL(seats));
 	}
 	
 	

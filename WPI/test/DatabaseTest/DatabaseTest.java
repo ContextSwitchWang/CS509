@@ -53,13 +53,7 @@ public class DatabaseTest {
 		SeatType seatType = SeatType.FirstClass;
 		SeatsCollect ssc = s.searchLocal(a, b, st, dt, 3, seatType);
 		ssc.sortOnPrice(true);
-		StringBuilder sb = new StringBuilder();
-		sb.append("<Flights>");
-		for(Seat seat: ssc.get(0)){
-			sb.append(String.format("<Flight number=%s seating=%s/>", seat.flight.Number, seat.seatType));	
-		}
-		sb.append("</Flights>");
-		System.out.println(sb.toString());
+		System.out.println(s.reserveURL(ssc.get(0)));
 		s.reserve(ssc.get(0));
 	}
 }
