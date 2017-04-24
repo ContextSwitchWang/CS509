@@ -1,5 +1,7 @@
 package flight;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import airport.Airport;
 
@@ -16,24 +18,49 @@ public class SeatsCollect extends ArrayList<Seats>{
 				ans.append(e.get(0).toString());
 			}
 			else if(size > 1){
-				ans.append(e.get(1));
+				ans.append(e.get(0));
 				for(int j = 1; j < size; j++){
-					ans.append(String.format("%-5s%s", "Leg" + Integer.toString(j), e.get(j)));
+					ans.append(String.format("\n%-5s%s", "Leg" + Integer.toString(j+1), e.get(j)));
 				}
 			}
 			else{
 				throw new RuntimeException("Unexpected empty seats");
 			}
-			ans.append("\n");
+			ans.append("\n\n");
 			i ++;
 		}
 		return ans.toString();
 	}
 	
-	void sortOnPrice(boolean ascending){
+	public SeatsCollect copy(){
+		SeatsCollect ssc = new SeatsCollect();
+		for(Seats seats : this){
+			ssc.add(seats.copy());
+		}
+		return ssc;
+	}
+	public void sortOnPrice(boolean ascending){
+		Collections.sort(this, new PriceComparator());
+		if(ascending){
+			Collections.reverse(this);
+		}
+	}
+	public void sortOnDpartureTime(boolean ascending){
 		
 	}
-	void sortOnDpartureTime(boolean ascending){
-		
-	}
+}
+
+class PriceComparator implements Comparator<Seats> {
+    @Override
+    public int compare(Seats a, Seats b) {
+    	double pa = 0;
+    	for(Seat s : a){
+    		pa += s.getPrice();
+    	}
+    	double pb = 0;
+    	for(Seat s : b){
+    		pb += s.getPrice();
+    	}
+        return (int)(pb - pa);
+    }
 }

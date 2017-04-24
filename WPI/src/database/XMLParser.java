@@ -2,6 +2,7 @@ package database;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.ParseException;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -21,7 +22,7 @@ import airport.Airports;
 import flight.Flights;
 import timeWindow.TimeWindow;
 import flight.Flight;
-
+import util.Util;
 
 public class XMLParser {
 	
@@ -34,15 +35,22 @@ public class XMLParser {
 	/**
 	 * @param xml string to generate flights from
 	 * @return the flights generated from XML
-	 * @throws NullPointerException to be consistent
 	 */
-	public static Flights parseFlights(String xml) throws NullPointerException {
+	public static Flights parseFlights(String xml)  {
 		Flights ans = new Flights();
 		Document doc = buildDomDoc(xml);
 		NodeList nodes = doc.getElementsByTagName("Flight");	
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Element element = (Element) nodes.item(i);
-			Flight e = buildFlight(element);	
+			Flight e;
+			try {
+				e = buildFlight(element);
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				System.out.println("Fatal error, invalid return from server");
+				e1.printStackTrace();
+				continue;
+			}	
 			if (e.isValid()) {
 				ans.add(e);
 			}
@@ -59,11 +67,10 @@ public class XMLParser {
 	 * 
 	 * @param xmlAirports XML string containing set of airports 
 	 * @return [possibly empty] collection of Airports in the xml string
-	 * @throws NullPointerException included to keep signature consistent with other addAll methods
 	 * 
 	 * the xmlAirports string adheres to the format specified by the server API
 	 */
-	public static Airports parseAirports (String xmlAirports) throws NullPointerException {
+	public static Airports parseAirports (String xmlAirports){
 		Airports airports = new Airports();
 		
 		// Load the XML string into a DOM tree for ease of processing
@@ -114,8 +121,9 @@ public class XMLParser {
 	/**
 	 * @param element to build flight from
 	 * @return a Flight constructed from element
+	 * @throws ParseException 
 	 */
-	private static Flight buildFlight(Element element) {
+	private static Flight buildFlight(Element element) throws ParseException {
 		Flight ans = new Flight();
 		ans.Airplane = element.getAttribute("Airplane");
 		ans.FlightTime = element.getAttribute("FlightTime");
@@ -123,10 +131,10 @@ public class XMLParser {
 		
 		Element seating = (Element)element.getElementsByTagName("Seating").item(0);
 		Element first = (Element)seating.getElementsByTagName("FirstClass").item(0);
-		ans.PriceFirstclass = first.getAttribute("Price");
+		ans.PriceFirstclass = Util.parseUSDollar(first.getAttribute("Price"));
 		ans.SeatsFirstclass = Integer.parseInt(getCharacterDataFromElement(first));
 		Element coach = (Element)seating.getElementsByTagName("Coach").item(0);
-		ans.PriceCoach = coach.getAttribute("Price");
+		ans.PriceCoach = Util.parseUSDollar(coach.getAttribute("Price"));
 		ans.SeatsCoach = Integer.parseInt(getCharacterDataFromElement(coach));
 		
 

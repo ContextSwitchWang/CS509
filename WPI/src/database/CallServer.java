@@ -41,7 +41,7 @@ public class CallServer {
 			}
 		}
 		catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -9,6 +9,11 @@ public class TimeWindow {
 	public static DateTimeFormatter DBformatter = DateTimeFormatter.ofPattern("yyyy MMM d HH:mm z");
 	public static DateTimeFormatter UIformatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm");
 	public static DateTimeFormatter URLformatter = DateTimeFormatter.ofPattern("yyyy_MM_d");
+	
+	public boolean inBetween(LocalDateTime t){
+		return t.isBefore(end) && t.isAfter(start);
+	}
+	
 	public String getStartDateURL(){
 		return getDate(start, URLformatter);
 	}
@@ -18,10 +23,22 @@ public class TimeWindow {
 	}
 	
 	public String getStartDateUI(){
+		if(end == null && start == null){
+			return "None";
+		}
+		if(end != null && start == null){
+			start = end.minusDays(1);
+		}
 		return getDate(start, UIformatter);
 	}
 	
 	public String getEndDateUI(){
+		if(end == null && start == null){
+			return "None";
+		}
+		if(end == null && start != null){
+			end = start.plusDays(1);
+		}
 		return getDate(end, UIformatter);
 	}
 	
@@ -42,15 +59,6 @@ public class TimeWindow {
 	}
 	
 	private String getDate(LocalDateTime day, DateTimeFormatter f){
-		if(start == null && end == null){
-			return "None";
-		}
-		if(start == null){
-			start = end.minusDays(1);
-		}
-		if(end == null){
-			end = start.plusDays(1);
-		}
 		return day.format(f);
 	}
 	

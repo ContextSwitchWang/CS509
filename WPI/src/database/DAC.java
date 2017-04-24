@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 // Database Access Class
 public class DAC extends CallServer implements DAI {
@@ -35,20 +37,47 @@ public class DAC extends CallServer implements DAI {
 		return result;
 	}
 	
+	public String getFlightsArriving(String ticketAgency, String airportCode, String day)
+	{
+		String queryString = "?team=TeamA&action=list&list_type=arriving&airport=" + airportCode +"&day=" + day;
+		String url = mUrlBase + queryString;
+		String result = callServer(url,"GET","TeamA");
+		return result;
+	}
+	
 	public String lock (String ticketAgency)
 	{
-		String queryString = "";
-		return "blah";
+		String queryString = "team=TeamA&action=lockDB";
+		String url = mUrlBase + queryString;
+		String result = callServer(url,"GET","TeamA");
+		return result;
 	}
 	
 	public String unlock (String ticketAgency)
 	{
-		return "blah";
+		String queryString = "team=TeamA&action=unlockDB";
+		String url = mUrlBase + queryString;
+		String result = callServer(url,"GET","TeamA");
+		return result;
 	}
 	
 	public String reserve (String ticketAgency, String xmlFlights) 
 	{
-		return "blah";
+		String queryString;
+		try {
+			queryString = "?team=TeamA&action=buyTickets&flightData=" + URLEncoder.encode(xmlFlights, "US-ASCII");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		String url = mUrlBase + queryString;
+		
+		lock(ticketAgency);
+		String result = callServer(url,"GET","TeamA");
+		unlock(ticketAgency);
+		return result;
+
 	}
 	
 	
