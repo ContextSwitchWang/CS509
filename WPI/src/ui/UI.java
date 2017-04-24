@@ -138,7 +138,7 @@ public class UI {
 					else{
 						selection = null;
 					}
-					break;
+					return;
 				default:
 					int sel = Integer.parseInt(input);
 					if(sel <= 0 || sel > ans.size()){
