@@ -17,4 +17,11 @@ public class Seats extends ArrayList<Seat>{
 		ans.append("\n");
 		return ans.toString();	
 	}
+	public Seats copy(){
+		Seats seats = new Seats();
+		for(Seat seat: this){
+			seats.add(seat.copy());
+		}
+		return seats;
+	}
 }

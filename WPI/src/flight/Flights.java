@@ -27,8 +27,8 @@ public class Flights extends ArrayList<Flight> {
 	public boolean isValid(){
 		long size = this.size();
 		if(size > 1){
-			long min = Saps.MIN_OVERLAYTIME;
-			long max = Saps.MAX_OVERLAYTIME;
+			long min = Saps.minLayover;
+			long max = Saps.maxLayover;
 			Flight flight = this.get(0);
 			for(int i = 1; i < size; i++){
 				Flight flight2 = this.get(i);

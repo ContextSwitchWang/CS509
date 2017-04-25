@@ -8,9 +8,16 @@ import java.util.Locale;
 public class TimeWindow {
 	public LocalDateTime start;
 	public LocalDateTime end;
-	public static DateTimeFormatter DBformatter = DateTimeFormatter.ofPattern("yyyy MMM d HH:mm z", Locale.US);
-	public static DateTimeFormatter UIformatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm", Locale.US);
+
+	public static DateTimeFormatter DBformatter = DateTimeFormatter.ofPattern("yyyy MMM d HH:mm z");
+	public static DateTimeFormatter UIformatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm");
 	public static DateTimeFormatter URLformatter = DateTimeFormatter.ofPattern("yyyy_MM_d", Locale.US);
+	
+	public boolean inBetween(LocalDateTime t){
+		return t.isBefore(end) && t.isAfter(start);
+	}
+	
+
 	public String getStartDateURL(){
 		return getDate(start, URLformatter);
 	}
@@ -20,10 +27,22 @@ public class TimeWindow {
 	}
 	
 	public String getStartDateUI(){
+		if(end == null && start == null){
+			return "None";
+		}
+		if(end != null && start == null){
+			start = end.minusDays(1);
+		}
 		return getDate(start, UIformatter);
 	}
 	
 	public String getEndDateUI(){
+		if(end == null && start == null){
+			return "None";
+		}
+		if(end == null && start != null){
+			end = start.plusDays(1);
+		}
 		return getDate(end, UIformatter);
 	}
 	
@@ -54,10 +73,6 @@ public class TimeWindow {
 	 * @return return string representation of day in format f
 	 */
 	private String getDate(LocalDateTime day, DateTimeFormatter f){
-		if(day == null){
-			return "None";
-		}
-
 		return day.format(f);
 	}
 

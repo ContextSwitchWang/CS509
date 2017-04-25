@@ -5,7 +5,7 @@ public class Airport {
 	public double Longitude;
 	public String Code;
 	public String name;
-	public Long   timeZoneOffset;
+	public Long   timeZoneOffset = (long) -1;
 	
 	public boolean isValid() {
 		if(name != null && Code != null)

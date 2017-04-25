@@ -1,6 +1,7 @@
 package flight;
 
 import java.time.LocalDateTime;
+import java.lang.Number;
 
 import airport.Airport;
 
@@ -14,9 +15,9 @@ public class Flight {
 	public String CodeArrival;
 	//TODO: in string format, create field in time format
 	public LocalDateTime TimeArrival;
-	public String PriceFirstclass;
+	public Number PriceFirstclass;
 	public int SeatsFirstclass;
-	public String PriceCoach;
+	public Number PriceCoach;
 	public int SeatsCoach;
 	public boolean isValid() {
 		//TODO
@@ -25,10 +26,26 @@ public class Flight {
 	}
 	public String toString(){
 		//TODO print all fields nicely
-		return String.format("%-10s%-10s%-25s%-15s%-25s", Airplane, Number, TimeDepart, FlightTime.toString() +  " min", TimeArrival);
+		return String.format("%-10s%-10s%-21s%-8s%-15s%-23s%-10s", Airplane, Number, TimeDepart, CodeDepart, FlightTime.toString() +  " min", TimeArrival, CodeArrival);
 	}
 	
 	public static String Header(){
-		return String.format("%-10s%-10s%-25s%-15s%-25s", "Airplane", "Number", "TimeDepart", "FlightTime", "TimeArrival");
+		return String.format("%-10s%-10s%-21s%-8s%-15s%-23s%-10s", "Airplane", "Number", "TimeDepart", "Depart", "FlightTime", "TimeArrival", "Arrivial");
+	}
+	
+	public Flight copy(){
+		Flight flight = new Flight();
+		flight.Airplane = this.Airplane;
+		flight.FlightTime = this.FlightTime;
+		flight.Number = this.Number;
+		flight.CodeDepart = this.CodeDepart;
+		flight.TimeDepart = this.TimeDepart;
+		flight.CodeArrival = this.CodeArrival;
+		flight.TimeArrival = this.TimeArrival;
+		flight.PriceFirstclass = this.PriceFirstclass;
+		flight.SeatsFirstclass = this.SeatsFirstclass;
+		flight.PriceCoach = this.PriceCoach;
+		flight.SeatsCoach = this.SeatsCoach;
+		return flight;
 	}
 }

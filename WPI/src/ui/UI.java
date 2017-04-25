@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 import airport.Airport;
 import airport.Airports;
+import conf.Saps;
 import database.DAC;
 import database.Search;
 import database.TimeConversion;
@@ -27,6 +28,7 @@ public class UI {
 	
 	public UI(){
 		departTime = new TimeWindow();
+		arrivTime = new TimeWindow();
 	}
 	
 	public void start(){
@@ -60,14 +62,29 @@ public class UI {
 						departTime.start = departTime.end.minusDays(1);
 					}
 					break;
+				case "e":
+					arrivTime.start = inputTime();
+					break;
+				case "f":
+					arrivTime.end = inputTime();
+					break;
 				case "c":
-					selectAirport();
+					departAirport = selectAirport();
+					break;
+				case "g":
+					arrivAirport = selectAirport();
 					break;
 				case "d":
 					InputSeatType();
 					break;
 				case "s":
-					Search();
+					Search(false);
+					break;
+				case "r":
+					Search(true);
+					break;
+				case "o":
+					confirm();
 					break;
 				case "l":
 					listAirports();
@@ -83,12 +100,61 @@ public class UI {
 			}
 		}
 	}
-	private void Search(){
+	private void Search(boolean searchReturn){
+		SeatsCollect ans;
 		if(departTime.start == null || departTime.end == null || departAirport == null){
 			System.out.println("Please input the ealiest depart time and airport at least");
 			return;
 		}
-		System.out.println(search.searchDepartLocal(departAirport, departTime, seatType));
+		if(arrivTime.start == null || arrivTime.end == null || arrivAirport == null){
+			System.out.println("Please input the ealiest arrival time and airport at least");
+			return;
+		}
+		if(searchReturn){
+			ans = search.searchLocal(arrivAirport, departAirport, arrivTime, departTime, Saps.legs, seatType);
+			returnSearchResult = ans;
+		}
+		else{
+			ans = search.searchLocal(departAirport, arrivAirport, departTime, arrivTime, Saps.legs, seatType);
+			searchResult = ans;
+		}
+		if(ans.isEmpty()){
+			System.out.println("Nothing matches your search");
+			return;
+		}
+		System.out.println(ans);
+		while(true){
+			System.out.println("Please Input p to sort on price, s to search again, c to cancel, e to deselect or an integer to make a selection");
+			System.out.print(">>>");
+			String input = stdin.nextLine();
+			switch(input){
+				case "p": ans.sortOnPrice(true); break;
+				case "s": System.out.println(ans); break;
+				case "c": return;
+				case "e":
+					if(searchReturn){
+						returnSelection = null;
+					}
+					else{
+						selection = null;
+					}
+					return;
+				default:
+					int sel = Integer.parseInt(input);
+					if(sel <= 0 || sel > ans.size()){
+						System.out.println("Number out of range");
+						break;
+					}
+					if(searchReturn){
+						returnSelection = ans.get(sel-1);
+					}
+					else{
+						selection = ans.get(sel-1);
+					}
+					System.out.println("Selection is saved");
+					return;
+			}
+		}
 	}
 	
 	private void InputSeatType() {
@@ -110,19 +176,18 @@ public class UI {
 		
 	}
 	
-	void selectAirport(){
+	Airport selectAirport(){
 		while(true){
 			System.out.println("Please input Airport Code:");
 			System.out.print(">>>");
 			String code = stdin.nextLine();
 			Airport a = search.getAirport(code);
 			if(a != null){
-				departAirport = a;
 				System.out.println("Your Airport is saved.");
-				return;
+				return a;
 			}
 			System.out.println("Your Code is not recognized.");
-			return;
+			return a;
 		}
 	}
 	
@@ -160,17 +225,38 @@ public class UI {
 				departTime.getEndDateUI(),
 				"(b)"));
 		System.out.println(String.format("%-40s%-40s%s", 
+				"Arrival Earliest Time",
+				arrivTime.getStartDateUI(),
+				"(e)"));
+		System.out.println(String.format("%-40s%-40s%s", 
+				"Arrival Latest Time",
+				arrivTime.getEndDateUI(),
+				"(f)"));
+		System.out.println(String.format("%-40s%-40s%s", 
 				"Departure Airport",
-				printDepartAirport(),
+				printAirport(departAirport),
 				"(c)"));
+		System.out.println(String.format("%-40s%-40s%s", 
+				"Arrival Airport",
+				printAirport(arrivAirport),
+				"(g)"));
 		System.out.println(String.format("%-40s%-40s%s", 
 				"Seat Type",
 				printSeat(),
 				"(d)"));
 		System.out.println(String.format("%-40s%-40s%s", 
 				"Search Flight",
-				"None",
+				printSelection(selection),
 				"(s)"));
+		System.out.println(String.format("%-40s%-40s%s", 
+				"Search Return Flight",
+				printSelection(returnSelection),
+				"(r)"));
+		System.out.println(String.format("%-40s%-40s%s", 
+				"Confirm and Reserve",
+				"None",
+				"(o)"));
+		
 		System.out.println(String.format("%-40s%-40s%s", 
 				"Display Menu",
 				"",
@@ -185,15 +271,50 @@ public class UI {
 				"(q)"));	
 	}
 	
-	String printDepartAirport(){
-		if(departAirport == null){
+	private void confirm() {
+		System.out.println("Do you confirm your current selections? y or n");
+		System.out.print(">>>");
+		String input = stdin.nextLine();
+		switch(input){
+			case "y": break;
+			default: return;
+		}
+		if(selection != null){
+			try {
+				search.reserve(selection);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				System.out.println("Fatal Error, Reservation failed");
+				e.printStackTrace();
+			}
+		}
+		if(returnSelection != null){
+			try {
+				search.reserve(returnSelection);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				System.out.println("Fatal Error, Reservation failed");
+				e.printStackTrace();
+			}
+		}
+		System.out.println("Reservation successfull");
+		return;
+	}
+
+	String printSelection(Seats seats){
+		if(seats == null){
+			return "None";
+		}
+		return seats.toString();
+	}
+	String printAirport(Airport airport){
+		if(airport == null){
 			return "None";
 		}
 		else{
-			return departAirport.name;
+			return airport.name;
 		}
 	}
-	
 	
 	
 	void listAirports(){
@@ -211,10 +332,11 @@ public class UI {
 	
 	Scanner stdin;
 	Search search = new Search(new DAC(), new TimeConversion());
-	private TimeWindow departTime;
-	private Airport departAirport;
+	private TimeWindow departTime, arrivTime;
+	private Airport departAirport, arrivAirport;
 	private State state;
 	private SeatType seatType;
-	private SeatsCollect searchResult;
+	private SeatsCollect searchResult, returnSearchResult;
+	private Seats selection, returnSelection;
 	private Seats Chosen;
 }
