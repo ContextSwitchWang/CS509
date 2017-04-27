@@ -73,6 +73,6 @@ class PriceComparator implements Comparator<Seats> {
 class DepatureTimeComparator implements Comparator<Seats> {
     @Override
     public int compare(Seats a, Seats b) {
-    	return a.get(0).flight.TimeDepart.compareTo(b.get(0).flight.TimeDepart);
+    	return b.get(0).flight.TimeDepart.compareTo(a.get(0).flight.TimeDepart);
     }
 }
