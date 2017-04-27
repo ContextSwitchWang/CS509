@@ -106,7 +106,7 @@ public class UI {
 		
 		if(searchReturn){
 			if(arrivTime.start == null || arrivTime.end == null || arrivAirport == null|| departAirport == null){
-				System.out.println("Please input the ealiest arrival time and airports at least");
+				System.out.println("Please input the ealiest return time and airports at least");
 				return;
 			}
 			ans = search.searchLocal(arrivAirport, departAirport, arrivTime, arrivTime.relaxDays(), Saps.legs, seatType);
@@ -233,11 +233,11 @@ public class UI {
 				departTime.getEndDateUI(),
 				"(b)"));
 		System.out.println(String.format("%-40s%-40s%s", 
-				"Arrival Earliest Time",
+				"Return Earliest Time",
 				arrivTime.getStartDateUI(),
 				"(e)"));
 		System.out.println(String.format("%-40s%-40s%s", 
-				"Arrival Latest Time",
+				"Return Latest Time",
 				arrivTime.getEndDateUI(),
 				"(f)"));
 		System.out.println(String.format("%-40s%-40s%s", 
