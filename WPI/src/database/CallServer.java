@@ -61,7 +61,7 @@ public class CallServer {
 			connection.setRequestMethod("POST");
 
 			System.out.println("\nSending 'POST' to ReserveFlights");
-			System.out.println("\nSending " + params);
+			//System.out.println("\nSending " + params);
 			
 			connection.setDoOutput(true);
 			connection.setDoInput(true);

@@ -67,6 +67,13 @@ public class TimeWindow {
 		return day.format(URLformatter);
 	}
 	
+	public TimeWindow relaxDays(){
+		TimeWindow t = new TimeWindow();
+		t.start = this.start.minusDays(1);
+		t.end = this.end.plusDays(5);
+		return t;
+	}
+	
 	/**
 	 * @param day could be start or end
 	 * @param f a formatter to use

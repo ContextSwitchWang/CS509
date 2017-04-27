@@ -102,20 +102,22 @@ public class UI {
 	}
 	private void Search(boolean searchReturn){
 		SeatsCollect ans;
-		if(departTime.start == null || departTime.end == null || departAirport == null){
-			System.out.println("Please input the ealiest depart time and airport at least");
-			return;
-		}
-		if(arrivTime.start == null || arrivTime.end == null || arrivAirport == null){
-			System.out.println("Please input the ealiest arrival time and airport at least");
-			return;
-		}
+		
+		
 		if(searchReturn){
-			ans = search.searchLocal(arrivAirport, departAirport, arrivTime, departTime, Saps.legs, seatType);
+			if(arrivTime.start == null || arrivTime.end == null || arrivAirport == null|| departAirport == null){
+				System.out.println("Please input the ealiest arrival time and airports at least");
+				return;
+			}
+			ans = search.searchLocal(arrivAirport, departAirport, arrivTime, arrivTime.relaxDays(), Saps.legs, seatType);
 			returnSearchResult = ans;
 		}
 		else{
-			ans = search.searchLocal(departAirport, arrivAirport, departTime, arrivTime, Saps.legs, seatType);
+			if(departTime.start == null || departTime.end == null || departAirport == null || arrivAirport == null){
+				System.out.println("Please input the ealiest depart time and airports at least");
+				return;
+			}
+			ans = search.searchLocal(departAirport, arrivAirport, departTime, departTime.relaxDays(), Saps.legs, seatType);
 			searchResult = ans;
 		}
 		if(ans.isEmpty()){
@@ -140,7 +142,13 @@ public class UI {
 					}
 					return;
 				default:
-					int sel = Integer.parseInt(input);
+					int sel;
+					try{
+						sel = Integer.parseInt(input);
+					}
+					catch(NumberFormatException e){
+						continue;
+					}
 					if(sel <= 0 || sel > ans.size()){
 						System.out.println("Number out of range");
 						break;
