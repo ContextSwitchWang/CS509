@@ -252,14 +252,16 @@ public class UI {
 				"Seat Type",
 				printSeat(),
 				"(d)"));
-		System.out.println(String.format("%-40s%-40s%s", 
+		System.out.println(String.format("%-80s%s%s", 
 				"Search Flight",
-				printSelection(selection),
-				"(s)"));
-		System.out.println(String.format("%-40s%-40s%s", 
+				"(s)",
+				printSelection(selection)
+				));
+		System.out.println(String.format("%-80s%s%s", 
 				"Search Return Flight",
-				printSelection(returnSelection),
-				"(r)"));
+				"(r)",
+				printSelection(returnSelection)
+				));
 		System.out.println(String.format("%-40s%-40s%s", 
 				"Confirm and Reserve",
 				"None",
@@ -313,7 +315,7 @@ public class UI {
 		if(seats == null){
 			return "None";
 		}
-		return seats.toString();
+		return "\n"+seats.toString();
 	}
 	String printAirport(Airport airport){
 		if(airport == null){
