@@ -74,6 +74,17 @@ public class UI {
 				case "g":
 					arrivAirport = selectAirport();
 					break;
+				case "h":
+					System.out.println("Please a number");
+					System.out.print(">>>");
+					String input = stdin.nextLine();
+					try{
+						maxStops = Integer.parseInt(input);
+					}
+					catch(NumberFormatException e){
+						System.out.println("Error parsing number");;
+					}
+					break;
 				case "d":
 					InputSeatType();
 					break;
@@ -108,7 +119,7 @@ public class UI {
 				System.out.println("Please input the ealiest return time and airports at least");
 				return;
 			}
-			ans = search.searchLocal(arrivAirport, departAirport, arrivTime, arrivTime.relaxDays(), Saps.legs, seatType);
+			ans = search.searchLocal(arrivAirport, departAirport, arrivTime, arrivTime.relaxDays(), maxStops, seatType);
 			returnSearchResult = ans;
 		}
 		else{
@@ -116,7 +127,7 @@ public class UI {
 				System.out.println("Please input the ealiest depart time and airports at least");
 				return;
 			}
-			ans = search.searchLocal(departAirport, arrivAirport, departTime, departTime.relaxDays(), Saps.legs, seatType);
+			ans = search.searchLocal(departAirport, arrivAirport, departTime, departTime.relaxDays(), maxStops, seatType);
 			searchResult = ans;
 		}
 		if(ans.isEmpty()){
@@ -249,6 +260,10 @@ public class UI {
 				printAirport(arrivAirport),
 				"(g)"));
 		System.out.println(String.format("%-40s%-40s%s", 
+				"Max Stops",
+				maxStops,
+				"(h)"));
+		System.out.println(String.format("%-40s%-40s%s", 
 				"Seat Type",
 				printSeat(),
 				"(d)"));
@@ -344,6 +359,7 @@ public class UI {
 	Search search = new Search(new DAC(), new TimeConversion());
 	private TimeWindow departTime, arrivTime;
 	private Airport departAirport, arrivAirport;
+	private int maxStops = 3;
 	private State state;
 	private SeatType seatType;
 	private SeatsCollect searchResult, returnSearchResult;

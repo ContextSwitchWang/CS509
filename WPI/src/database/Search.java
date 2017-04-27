@@ -43,7 +43,7 @@ public class Search {
 	public SeatsCollect searchLocal(Airport s, Airport d, TimeWindow st, TimeWindow dt, Integer legs, SeatType seatType){
 		if(Saps.clearCacheEachSearch){
 			this.cache.clear();
-			}
+		}
 		long offset = getTimeZoneOffset(s);
 		TimeWindow newst = new TimeWindow();
 		newst.start = st.start.minusSeconds(offset);
@@ -92,7 +92,8 @@ public class Search {
 	 */
 	public SeatsCollect search(Airport s, Airport d, TimeWindow st, TimeWindow dt, int legs, SeatType seatType){
 		SeatsCollect ans = new SeatsCollect();
-		SeatsCollect arriv, depart;
+		SeatsCollect depart;
+		SeatsCollect arriv;
 		arriv = searchDepartOrArriv(d, dt, seatType, false);
 		for(Seats ss: arriv){
 			if(ss.get(0).flight.CodeDepart.equals(s.Code) && st.inBetween(ss.get(0).flight.TimeDepart)){

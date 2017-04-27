@@ -69,7 +69,7 @@ public class TimeWindow {
 	
 	public TimeWindow relaxDays(){
 		TimeWindow t = new TimeWindow();
-		t.start = this.start.minusDays(1);
+		t.start = this.start.minusDays(2);
 		t.end = this.end.plusDays(5);
 		return t;
 	}
