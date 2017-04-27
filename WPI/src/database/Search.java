@@ -40,7 +40,7 @@ public class Search {
 	 * @return a collection of valid flights
 	 * @throws Exception
 	 */
-	public SeatsCollect searchLocal(Airport s, Airport d, TimeWindow st, TimeWindow dt, Integer legs, SeatType seatType){
+	public SeatsCollect searchLocal(Airport s, Airport d, TimeWindow st, Integer legs, SeatType seatType){
 		if(Saps.clearCacheEachSearch){
 			this.cache.clear();
 		}
@@ -48,13 +48,8 @@ public class Search {
 		TimeWindow newst = new TimeWindow();
 		newst.start = st.start.minusSeconds(offset);
 		newst.end   = st.end.minusSeconds(offset);
-		TimeWindow newdt = new TimeWindow();
 		
-		offset = getTimeZoneOffset(d);
-		newdt.start = dt.start.minusSeconds(offset);
-		newdt.end   = dt.end.minusSeconds(offset);
-		
-		SeatsCollect ssc = search(s, d, newst, newdt, legs, seatType);
+		SeatsCollect ssc = search(s, d, newst, legs, seatType);
 		ssc.sortOnPrice(true);
 		SeatsCollect newssc = translateToLocalTime(Saps.numberSearchResult > ssc.size()? ssc: ssc.subList(0, Saps.numberSearchResult));
 		return newssc;
@@ -90,36 +85,21 @@ public class Search {
 	 * @return a collection of valid flights
 	 * @throws Exception
 	 */
-	public SeatsCollect search(Airport s, Airport d, TimeWindow st, TimeWindow dt, int legs, SeatType seatType){
+	public SeatsCollect search(Airport s, Airport d, TimeWindow st, int legs, SeatType seatType){
 		SeatsCollect ans = new SeatsCollect();
 		SeatsCollect depart;
-		SeatsCollect arriv;
-		arriv = searchDepartOrArriv(d, dt, seatType, false);
-		for(Seats ss: arriv){
-			if(ss.get(0).flight.CodeDepart.equals(s.Code) && st.inBetween(ss.get(0).flight.TimeDepart)){
-				ans.add(ss);
-			}
-		}
+		//SeatsCollect arriv;
+		//arriv = searchDepartOrArriv(d, dt, seatType, false);
 		
 		depart = searchDepartOrArriv(s, st, seatType, true);
-		for(int i = 1; i < legs; i++){
-			for(Seats ss: arriv){
-				for(Seats ssd: depart){
-					String code2 = ss.get(0).flight.CodeDepart;
-					LocalDateTime time2 = ss.get(0).flight.TimeDepart;
-					String code1 = ssd.get(ssd.size()-1).flight.CodeArrival;
-					LocalDateTime time1 = ssd.get(ssd.size()-1).flight.TimeArrival;
-					
-					if(code1.equals(code2) 
-							&& time2.isBefore(time1.plusMinutes(Saps.maxLayover))
-							&& time2.isAfter(time1.plusMinutes(Saps.minLayover))){
-						Seats seats = new Seats();
-						seats.addAll(ssd);
-						seats.addAll(ss);
-						ans.add(seats);
-					}
-				}	
-			}
+		for(int i = 0; i < legs; i++){
+			
+			for(Seats ssd: depart){
+				if(ssd.get(ssd.size()-1).flight.CodeArrival.equals(d.Code)){
+					ans.add(ssd);
+				}
+			}	
+			
 			SeatsCollect t = new SeatsCollect();
 			for(Seats ssd: depart){
 				String code1 = ssd.get(ssd.size()-1).flight.CodeArrival;

@@ -119,7 +119,7 @@ public class UI {
 				System.out.println("Please input the ealiest return time and airports at least");
 				return;
 			}
-			ans = search.searchLocal(arrivAirport, departAirport, arrivTime, arrivTime.relaxDays(), maxStops, seatType);
+			ans = search.searchLocal(arrivAirport, departAirport, arrivTime, maxStops, seatType);
 			returnSearchResult = ans;
 		}
 		else{
@@ -127,7 +127,7 @@ public class UI {
 				System.out.println("Please input the ealiest depart time and airports at least");
 				return;
 			}
-			ans = search.searchLocal(departAirport, arrivAirport, departTime, departTime.relaxDays(), maxStops, seatType);
+			ans = search.searchLocal(departAirport, arrivAirport, departTime, maxStops, seatType);
 			searchResult = ans;
 		}
 		if(ans.isEmpty()){
@@ -359,7 +359,7 @@ public class UI {
 	Search search = new Search(new DAC(), new TimeConversion());
 	private TimeWindow departTime, arrivTime;
 	private Airport departAirport, arrivAirport;
-	private int maxStops = 3;
+	private int maxStops = Saps.legs;
 	private State state;
 	private SeatType seatType;
 	private SeatsCollect searchResult, returnSearchResult;
