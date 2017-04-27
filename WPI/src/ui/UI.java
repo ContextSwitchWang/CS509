@@ -100,10 +100,9 @@ public class UI {
 			}
 		}
 	}
+
 	private void Search(boolean searchReturn){
 		SeatsCollect ans;
-		
-		
 		if(searchReturn){
 			if(arrivTime.start == null || arrivTime.end == null || arrivAirport == null|| departAirport == null){
 				System.out.println("Please input the ealiest return time and airports at least");
@@ -126,11 +125,12 @@ public class UI {
 		}
 		System.out.println(ans);
 		while(true){
-			System.out.println("Please Input p to sort on price, s to search again, c to cancel, e to deselect or an integer to make a selection");
+			System.out.println("Please Input p to sort on price, d to sort on departure time, s to search again, c to cancel, e to deselect or an integer to make a selection");
 			System.out.print(">>>");
 			String input = stdin.nextLine();
 			switch(input){
 				case "p": ans.sortOnPrice(true); break;
+				case "d": ans.sortOnDpartureTime(true); break;
 				case "s": System.out.println(ans); break;
 				case "c": return;
 				case "e":
