@@ -313,7 +313,7 @@ public class UI {
 
 	String printSelection(Seats seats){
 		if(seats == null){
-			return "None";
+			return "\nNone";
 		}
 		return "\n"+seats.toString();
 	}
