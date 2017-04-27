@@ -66,7 +66,16 @@ class PriceComparator implements Comparator<Seats> {
     	for(Seat s : b){
     		pb += s.getPrice();
     	}
-        return (int)(pb - pa);
+    	double diff = pb - pa;
+    	if(diff > 0){
+    		return 1;
+    	}
+    	else if(diff < 0){
+    		return -1;
+    	}
+    	else{
+    		return 0;
+    	}
     }
 }
 

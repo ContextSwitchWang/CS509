@@ -129,8 +129,8 @@ public class UI {
 			System.out.print(">>>");
 			String input = stdin.nextLine();
 			switch(input){
-				case "p": ans.sortOnPrice(true);
-				case "d": ans.sortOnDpartureTime(true);
+				case "p": ans.sortOnPrice(true); System.out.println(ans); break;
+				case "d": ans.sortOnDpartureTime(true); System.out.println(ans); break;
 				case "s": System.out.println(ans); break;
 				case "c": return;
 				case "e":
