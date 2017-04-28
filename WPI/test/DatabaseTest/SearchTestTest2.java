@@ -34,7 +34,7 @@ public class SearchTestTest2 {
 		dt.start = TimeWindow.parseDateUI("2017-05-16-00:00");
 		dt.end = TimeWindow.parseDateUI("2017-05-17-00:00");
 		SeatType seatType = SeatType.FirstClass;
-		SeatsCollect ssc = s.searchLocal(a, b, st, dt, 3, seatType);
+		SeatsCollect ssc = s.searchLocal(a, b, st, 3, seatType);
 		ssc.sortOnPrice(true);
 		System.out.println(ssc);
 	}

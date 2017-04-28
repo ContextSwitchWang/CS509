@@ -51,7 +51,7 @@ public class DatabaseTest {
 		dt.start = TimeWindow.parseDateUI("2017-05-16-00:00");
 		dt.end = TimeWindow.parseDateUI("2017-05-17-00:00");
 		SeatType seatType = SeatType.FirstClass;
-		SeatsCollect ssc = s.searchLocal(a, b, st, dt, 3, seatType);
+		SeatsCollect ssc = s.searchLocal(a, b, st, 3, seatType);
 		ssc.sortOnPrice(true);
 		System.out.println(s.reserveURL(ssc.get(0)));
 		s.reserve(ssc.get(0));
