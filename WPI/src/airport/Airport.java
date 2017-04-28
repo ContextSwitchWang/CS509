@@ -13,11 +13,18 @@ public class Airport {
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString(){
 		return String.format("%-50s%s", name, Code);
 	}
 	
 
+	/**
+	 * 
+	 * @return Generator formated header
+	 */
 	public static String Header(){
 		return String.format("%-50s%s", "Name", "Code");
 	}

@@ -14,11 +14,4 @@ public class Util {
 		return USDollar.parse(s);
 	}
 	
-	void sortOnPrice(SeatsCollect collect, boolean ascending){
-		
-	}
-	void sortOnDpartureTime(SeatsCollect collect, boolean ascending){
-		
-	}
-	
 }

@@ -62,17 +62,6 @@ public class DAC extends CallServer implements DAI {
 		return result;
 	}
 	
-	/**
-	 * Reserve a seat on one or more connecting flights
-	 * 
-	 * The XML string identifying the reserveation is created by the calling client. 
-	 * This method creates the HTTP POST request to reserve the fligt(s) as specified
-	 * 
-	 * @param team identifying the team making the reservation
-	 * @param xmlReservation is the string identifying the reservation to make
-	 * 
-	 * @return true if SUCCESS code returned from server
-	 */
 	public String reserve(String team, String xmlReservation) {
 		lock(team);
 		String r = callServerPost(mUrlBase, team, "team=" + team + "&action=buyTickets" + "&flightData=" + xmlReservation);

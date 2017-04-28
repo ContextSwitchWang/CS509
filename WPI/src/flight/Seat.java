@@ -13,6 +13,10 @@ public class Seat {
 		return String.format("%s%-15s%-10s", Flight.Header(), "Seat Type", "Price");
 	}
 	
+
+	/**
+	 * @return double representation of the price, which is unreliable because of rounding errors
+	 */
 	public Double getPrice(){
 		if(seatType == SeatType.Coach){
 			return flight.PriceCoach.doubleValue();

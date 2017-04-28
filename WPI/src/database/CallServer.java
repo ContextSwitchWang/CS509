@@ -8,6 +8,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * @author dom
+ * Database access super class with convenient functions for making http get and post
+ */
 public class CallServer {
 	
 	protected String callServer(String urlString, String method, String userAgent)

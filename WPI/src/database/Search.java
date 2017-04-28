@@ -16,6 +16,10 @@ import flight.Seat;
 import flight.SeatType;
 import conf.Saps;
 
+/**
+ * @author dom
+ * all the high level functions for talking with server
+ */
 public class Search {
 	
 	private static final UnsupportedOperationException e = null;
@@ -30,15 +34,12 @@ public class Search {
 	}
 	
 	/**
-	 * *
 	 * @param s depart airport
 	 * @param d arrival airport
 	 * @param st depart time window
-	 * @param dt arrival time window
-	 * @param legs number of legs allowed
-	 * @param overlay max time of overlay allowed
-	 * @return a collection of valid flights
-	 * @throws Exception
+	 * @param legs number of stops allowed
+	 * @param seatType coach or first class or both
+	 * @return a collection of seats, where each seats will be multiple ticket from s to d
 	 */
 	public SeatsCollect searchLocal(Airport s, Airport d, TimeWindow st, Integer legs, SeatType seatType){
 		if(Saps.clearCacheEachSearch){
@@ -54,7 +55,8 @@ public class Search {
 		SeatsCollect newssc = translateToLocalTime(Saps.numberSearchResult > ssc.size()? ssc: ssc.subList(0, Saps.numberSearchResult));
 		return newssc;
 	}
-	public SeatsCollect translateToLocalTime(Collection<? extends Seats> ssc){
+	
+	private SeatsCollect translateToLocalTime(Collection<? extends Seats> ssc){
 		SeatsCollect newssc = new SeatsCollect();
 		long offset;
 		for(Seats ss: ssc){
@@ -71,21 +73,9 @@ public class Search {
 		}
 		return newssc;
 	}
-	/**/
 	
 	
-	/**
-	 * *
-	 * @param s depart airport
-	 * @param d arrival airport
-	 * @param st depart time window
-	 * @param dt arrival time window
-	 * @param legs number of legs allowed
-	 * @param overlay max time of overlay allowed
-	 * @return a collection of valid flights
-	 * @throws Exception
-	 */
-	public SeatsCollect search(Airport s, Airport d, TimeWindow st, int legs, SeatType seatType){
+	private SeatsCollect search(Airport s, Airport d, TimeWindow st, int legs, SeatType seatType){
 		SeatsCollect ans = new SeatsCollect();
 		SeatsCollect depart;
 		depart = searchDepartOrArriv(s, st, seatType, true);
@@ -128,6 +118,10 @@ public class Search {
 		return ans;
 	}
 	
+	/**
+	 * @param code three letter airport code
+	 * @return an airport object, which user is forbidden from modifying 
+	 */
 	public Airport getAirport(String code){
 		if(airports == null){
 			String xml = dao.getAirports(Saps.ticketAgency);
@@ -149,49 +143,8 @@ public class Search {
 		}
 		return s.timeZoneOffset;
 	}
-	/*
-	public SeatsCollect searchDepartLocal(Airport s, TimeWindow st, SeatType seatType){
-		long offset = getTimeZoneOffset(s);
-		TimeWindow newst = new TimeWindow();
-		newst.start = st.start.minusSeconds(offset);
-		newst.end   = st.end.minusSeconds(offset);
-		SeatsCollect ssc = searchDepartOrArriv(s, newst, seatType, true);
-		for(Seats ss: ssc){
-			for(Seat seat: ss){
-				offset = getTimeZoneOffset(getAirport(seat.flight.CodeDepart));
-				seat.flight.TimeDepart.plusSeconds(offset);
-				offset = getTimeZoneOffset(getAirport(seat.flight.CodeArrival));
-				seat.flight.TimeArrival.plusSeconds(offset);
-				
-			}
-		}
-		return ssc;
-	}
-	*/
-	/*public SeatsCollect searchDepart(Airport s, TimeWindow st, SeatType seatType){
-		SeatsCollect ans = new SeatsCollect();
-		LocalDateTime start = st.start;
-		LocalDateTime end   = st.end;
-		LocalDateTime time = start;
-		do{
-			SeatsCollect ssc = searchOnDay(s, TimeWindow.getDate(time), seatType, true);
-			for(Seats ss: ssc ){
-				if(ss.size() == 0){
-					throw new RuntimeException("Unexpected empty seats");
-				}
-				LocalDateTime depart = ss.get(0).flight.TimeDepart;
-				if(depart.isBefore(end) &&
-						depart.isAfter(start)){
-					ans.add(ss);
-				}
-			}
-			time = time.plusDays(1);
-		}while(time.getYear() <= st.end.getYear() 
-			&& time.getDayOfYear() <= st.end.getDayOfYear());;
-		return ans;
-	}*/
 	
-	public SeatsCollect searchDepartOrArriv(Airport s, TimeWindow st, SeatType seatType,  boolean departing){
+	private SeatsCollect searchDepartOrArriv(Airport s, TimeWindow st, SeatType seatType,  boolean departing){
 		SeatsCollect ans = new SeatsCollect();
 		LocalDateTime start = st.start;
 		LocalDateTime end   = st.end;
@@ -220,44 +173,11 @@ public class Search {
 		return ans;
 	}
 	
-	/*public SeatsCollect searchOnDay(String s, String day, SeatType seatType, boolean departing){
-		SeatsCollect ans = new SeatsCollect();
-		if(seatType == null){
-			ans.addAll(searchOnDay(s, day, SeatType.Coach, departing));
-			ans.addAll(searchOnDay(s, day, SeatType.FirstClass, departing));
-			return ans;
-		}
-		
-		String fs;
-		if(departing){
-			fs = dao.getFlightsDeparting(Saps.ticketAgency, s, day);
-		}
-		else{
-			fs = dao.getFlightsArriving(Saps.ticketAgency, s, day);
-		}
-		
-		Flights flights =XMLParser.parseFlights(fs);
-		Seat seat;
-		Seats seats;
-		for(Flight f : flights){
-			if(seatType == SeatType.Coach && f.SeatsCoach > 0
-				|| seatType == SeatType.FirstClass && f.SeatsFirstclass > 0){
-				seat = new Seat();
-				seats = new Seats();
-				seat.flight = f;
-				seat.seatType = seatType;
-				seats.add(seat);
-				ans.add(seats);
-			}
-		}
-		return ans;
-	}*/
-	
-	public String getKey(String s, String day, boolean departing){
+	private String getKey(String s, String day, boolean departing){
 		return s+day+ (departing? "1":"0");
 	}
 	
-	public SeatsCollect searchOnDay(String s, String day, SeatType seatType, boolean departing){
+	private SeatsCollect searchOnDay(String s, String day, SeatType seatType, boolean departing){
 		SeatsCollect ans = new SeatsCollect();
 		if(seatType != null){
 			for(Seats seats : searchOnDay(s, day, null, departing)){
@@ -315,6 +235,9 @@ public class Search {
 		}
 	}
 	
+	/**
+	 * @return a list of airports object, which the user is forbidden from modifying
+	 */
 	public Airports getAirports(){
 		if(airports == null){
 			String xml = dao.getAirports(Saps.ticketAgency);

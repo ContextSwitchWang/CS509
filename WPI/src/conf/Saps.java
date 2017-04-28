@@ -1,5 +1,9 @@
 package conf;
 
+/**
+ * @author dom
+ *	System parameters
+ */
 public class Saps {
 	public static String ticketAgency = "TeamA"; 
 
