@@ -88,9 +88,6 @@ public class Search {
 	public SeatsCollect search(Airport s, Airport d, TimeWindow st, int legs, SeatType seatType){
 		SeatsCollect ans = new SeatsCollect();
 		SeatsCollect depart;
-		//SeatsCollect arriv;
-		//arriv = searchDepartOrArriv(d, dt, seatType, false);
-		
 		depart = searchDepartOrArriv(s, st, seatType, true);
 		for(int i = 0; i < legs; i++){
 			
@@ -99,7 +96,9 @@ public class Search {
 					ans.add(ssd);
 				}
 			}	
-			
+			if(i == legs-1){
+				break;
+			}
 			SeatsCollect t = new SeatsCollect();
 			for(Seats ssd: depart){
 				String code1 = ssd.get(ssd.size()-1).flight.CodeArrival;
